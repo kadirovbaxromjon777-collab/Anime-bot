@@ -6,7 +6,7 @@ app = Client(
     "anidone_bot",
     api_id=36275728,
     api_hash="62384c5845916b8ac25996f83154a13b",
-    bot_token="8305229278:AAFODN5XHl7_IsJN_czcX9FQ_zcWdVH7UI8"
+    bot_token="8305229278:AAGOMYwCMxJZWvhz2yLYgYxNyRMuiuCG0Cw"
 )
 
 CHANNEL_ID = -1003754381541
