@@ -1,44 +1,80 @@
 from pyrogram import Client, filters
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
+from pyrogram.errors import UserNotParticipant
 
-# SIZNING BOTINGIZ VA KANALINGIZ UCHUN TAYYOR KOD
 app = Client(
-    "my_anime_bot",
-    api_id=29384756,  # O'zingizning API ID raqamingizni yozasiz
-    api_hash="1234567890abcdef1234567890abcdef",  # API Hash
-    bot_token="8305229278:AAFeTrRPPuwusUdUITTUuc75eJhTkdkPOI"  # Botingiz tokeni
+    "anidone_bot",
+    api_id=29384756,
+    api_hash="1234567890abcdef1234567890abcdef",
+    bot_token="8305229278:AAFeTrRPPuwusUdUITTUuc75eJhTkdkPOI"
 )
 
-CHANNEL_USERNAME = "@Anidone_uz_animelar"  # Kanalingiz
+CHANNEL_ID = -1003754381541
 
-@app.on_message(filters.command("post"))
-def send_anime_post(client, message):
-    # Yuklab olish tugmasi
-    keyboard = InlineKeyboardMarkup(
-        [
-            [
-                InlineKeyboardButton(
-                    "📥 Yuklab olish", 
-                    url="https://t.me/Anidone_uz_animelar?start=1"
-                )
-            ]
-        ]
-    )
+ANIMES = {
+    "746": {
+        "title": "Vaqt Nigohidan tashqarida",
+        "part": "4-qism",
+        "photo": "https://telegra.ph/file/example.jpg"
+    },
+    "286": {
+        "title": "Naruto Shippuden",
+        "part": "1-qism",
+        "photo": "https://telegra.ph/file/example2.jpg"
+    }
+}
+
+async def check_subscription(client, user_id):
+    try:
+        await client.get_chat_member(CHANNEL_ID, user_id)
+        return True
+    except UserNotParticipant:
+        return False
+    except Exception:
+        return True
+
+@app.on_message(filters.command("start"))
+async def start_command(client, message: Message):
+    user_id = message.from_user.id
+    if not await check_subscription(client, user_id):
+        keyboard = InlineKeyboardMarkup([
+            [InlineKeyboardButton("📢 Kanalga a'zo bo'lish", url="https://t.me/Anidone_uz_animelar")],
+            [InlineKeyboardButton("✅ Tekshirish", callback_data="check_sub")]
+        ])
+        await message.reply("⚠️ Botdan foydalanish uchun avval quyidagi kanalimizga obuna bo'ling:", reply_markup=keyboard)
+    else:
+        await message.reply("Salom! Anime kodini yuboring (masalan: **746**, **286**...), men sizga animeni topib beraman! 🎬")
+
+@app.on_message(filters.text & ~filters.command(["start"]))
+async def find_anime(client, message: Message):
+    user_id = message.from_user.id
     
-    # Anime haqida matn
-    caption_text = (
-        "🎬 Nomi: Vaqt Nigohidan tashqarida\n"
-        "📑 Qism: 4\n"
-        "🎙 Ovoz berdi: Shakh va Meduca"
-    )
+    if not await check_subscription(client, user_id):
+        keyboard = InlineKeyboardMarkup([
+            [InlineKeyboardButton("📢 Kanalga a'zo bo'lish", url="https://t.me/Anidone_uz_animelar")],
+            [InlineKeyboardButton("✅ Tekshirish", callback_data="check_sub")]
+        ])
+        await message.reply("⚠️ Botdan foydalanish uchun avval quyidagi kanalimizga obuna bo'ling:", reply_markup=keyboard)
+        return
+        
+    code = message.text.strip()
     
-    # Kanalga rasm va matnni yuborish
-    client.send_photo(
-        chat_id=CHANNEL_USERNAME,
-        photo="https://telegra.ph/file/example.jpg",  # Shu yerga rasmingiz havolasini qo'yasiz
-        caption=caption_text,
-        reply_markup=keyboard
-    )
-    message.reply("Post kanalga muvaffaqiyatli tashlandi!")
+    if code in ANIMES:
+        anime = ANIMES[code]
+        caption = f"🎬 Nomi: {anime['title']}\n📑 Qism: {anime['part']}"
+        
+        keyboard = InlineKeyboardMarkup([
+            [InlineKeyboardButton("📥 Yuklab olish", url="https://t.me/Anidone_uz_animelar")]
+        ])
+        
+        await client.send_photo(
+            chat_id=message.chat.id,
+            photo=anime['photo'],
+            caption=caption,
+            reply_markup=keyboard
+        )
+    else:
+        await message.reply("❌ Bunday kodli anime topilmadi. Boshqa kod yuborib ko'ring.")
 
 app.run()
+
