@@ -1,7 +1,4 @@
 import asyncio
-import os
-from threading import Thread
-from flask import Flask
 from pyrogram import Client, filters
 from pyrogram.types import (
     InlineKeyboardButton,
@@ -11,26 +8,7 @@ from pyrogram.types import (
 )
 from pyrogram.errors import UserNotParticipant, ChatAdminRequired
 
-# --- 1. Flask server (Render port talabini bajarish uchun) ---
-app_flask = Flask("")
-
-
-@app_flask.route("/")
-def home():
-  return "Bot ishlayapti va port ochildi!"
-
-
-def run_flask():
-  app_flask.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
-
-
-def keep_alive():
-  t = Thread(target=run_flask)
-  t.daemon = True
-  t.start()
-
-
-# --- 2. Pyrogram Bot Kodlari ---
+# Pyrogram Bot
 app = Client(
     "anidone_bot",
     api_id=36275728,
@@ -134,12 +112,7 @@ async def find_anime(client, message: Message):
     )
 
 
-# --- 3. Dasturni ishga tushirish ---
 if __name__ == "__main__":
-  keep_alive()
-
-  loop = asyncio.new_event_loop()
-  asyncio.set_event_loop(loop)
   app.run()
     
     
