@@ -1,12 +1,12 @@
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message, CallbackQuery
-from pyrogram.errors import UserNotParticipant, ChatAdminRequired, UsernameNotOccupied
+from pyrogram.errors import UserNotParticipant, ChatAdminRequired
 
 app = Client(
     "anidone_bot",
     api_id=29384756,
     api_hash="1234567890abcdef1234567890abcdef",
-    bot_token="8305229278:AAFeTrRPPuwusUdUITTUuc75eJhTkdkPOI"
+    bot_token="8305229278:AAFODN5XHl7_IsJN_czcX9FQ_zcWdVH7UI8"
 )
 
 CHANNEL_ID = -1003754381541
@@ -32,7 +32,6 @@ async def check_subscription(client, user_id):
     except UserNotParticipant:
         return False
     except (ChatAdminRequired, Exception):
-        # Agar bot kanalda admin bo'lmasa yoki boshqa xato chiqsa, bot to'xtab qolmasligi uchun True qaytaradi
         return True
 
 @app.on_message(filters.command("start"))
@@ -47,7 +46,6 @@ async def start_command(client, message: Message):
     else:
         await message.reply("Salom! Anime kodini yuboring (masalan: **746**, **286**...), men sizga animeni topib beraman! 🎬")
 
-# "Tekshirish" tugmasi bosilganda ishlaydigan qism
 @app.on_callback_query(filters.regex("check_sub"))
 async def check_sub_callback(client, callback: CallbackQuery):
     user_id = callback.from_user.id
