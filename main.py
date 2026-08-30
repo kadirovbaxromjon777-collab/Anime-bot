@@ -4,7 +4,7 @@ from telebot import types
 TOKEN = '8305229278:AAFeTrRPPhuwusUdUITTUuc75eJhTkdkPOI'
 bot = telebot.TeleBot(TOKEN)
 
-CHANNEL = '@Animelar_Uzbek_tilida'
+CHANNEL = '@Anidone_uzbek_tilida'
 
 # Anime kodlari va ma'lumotlari (kodlarni o'zingiz xohlagancha o'zgartirishingiz mumkin)
 ANIMALS_DB = {
