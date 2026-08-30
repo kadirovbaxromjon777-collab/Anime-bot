@@ -1,8 +1,4 @@
-
-
-
-
-
+import asyncio
 import os
 from threading import Thread
 from flask import Flask
@@ -30,6 +26,7 @@ def run_flask():
 
 def keep_alive():
   t = Thread(target=run_flask)
+  t.daemon = True
   t.start()
 
 
@@ -82,8 +79,8 @@ async def start_command(client, message: Message):
     )
   else:
     await message.reply(
-        "Salom! Anime kodini yuboring (masalan: **746**, **286**...), men sizga"
-        " animeni topib beraman! 🎬"
+        "Salom! Anime kodini yuboring (masalan: **746**, **286**...), men"
+        " sizga animeni topib beraman! 🎬"
     )
 
 
@@ -139,8 +136,9 @@ async def find_anime(client, message: Message):
 
 # --- 3. Dasturni ishga tushirish ---
 if __name__ == "__main__":
-  # Flask serverini fonda ishga tushiramiz (port band qilish uchun)
+  # Flask serverini fonda ishga tushiramiz
   keep_alive()
-  # Pyrogram botni ishga tushiramiz
+  # Pyrogram botni to'g'ri usulda ishga tushiramiz
   app.run()
+    
     
