@@ -1,6 +1,6 @@
 from pyrogram import Client, filters
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
-from pyrogram.errors import UserNotParticipant
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message, CallbackQuery
+from pyrogram.errors import UserNotParticipant, ChatAdminRequired, UsernameNotOccupied
 
 app = Client(
     "anidone_bot",
@@ -10,6 +10,7 @@ app = Client(
 )
 
 CHANNEL_ID = -1003754381541
+CHANNEL_LINK = "https://t.me/Anidone_uz_animelar"
 
 ANIMES = {
     "746": {
@@ -30,7 +31,8 @@ async def check_subscription(client, user_id):
         return True
     except UserNotParticipant:
         return False
-    except Exception:
+    except (ChatAdminRequired, Exception):
+        # Agar bot kanalda admin bo'lmasa yoki boshqa xato chiqsa, bot to'xtab qolmasligi uchun True qaytaradi
         return True
 
 @app.on_message(filters.command("start"))
@@ -38,12 +40,21 @@ async def start_command(client, message: Message):
     user_id = message.from_user.id
     if not await check_subscription(client, user_id):
         keyboard = InlineKeyboardMarkup([
-            [InlineKeyboardButton("📢 Kanalga a'zo bo'lish", url="https://t.me/Anidone_uz_animelar")],
+            [InlineKeyboardButton("📢 Kanalga a'zo bo'lish", url=CHANNEL_LINK)],
             [InlineKeyboardButton("✅ Tekshirish", callback_data="check_sub")]
         ])
         await message.reply("⚠️ Botdan foydalanish uchun avval quyidagi kanalimizga obuna bo'ling:", reply_markup=keyboard)
     else:
         await message.reply("Salom! Anime kodini yuboring (masalan: **746**, **286**...), men sizga animeni topib beraman! 🎬")
+
+# "Tekshirish" tugmasi bosilganda ishlaydigan qism
+@app.on_callback_query(filters.regex("check_sub"))
+async def check_sub_callback(client, callback: CallbackQuery):
+    user_id = callback.from_user.id
+    if await check_subscription(client, user_id):
+        await callback.message.edit_text("✅ Rahmat! Obuna tasdiqlandi. Endi anime kodini yuboring:")
+    else:
+        await callback.answer("❌ Siz hali kanalga obuna bo'lmagansiz!", show_alert=True)
 
 @app.on_message(filters.text & ~filters.command(["start"]))
 async def find_anime(client, message: Message):
@@ -51,7 +62,7 @@ async def find_anime(client, message: Message):
     
     if not await check_subscription(client, user_id):
         keyboard = InlineKeyboardMarkup([
-            [InlineKeyboardButton("📢 Kanalga a'zo bo'lish", url="https://t.me/Anidone_uz_animelar")],
+            [InlineKeyboardButton("📢 Kanalga a'zo bo'lish", url=CHANNEL_LINK)],
             [InlineKeyboardButton("✅ Tekshirish", callback_data="check_sub")]
         ])
         await message.reply("⚠️ Botdan foydalanish uchun avval quyidagi kanalimizga obuna bo'ling:", reply_markup=keyboard)
@@ -64,7 +75,7 @@ async def find_anime(client, message: Message):
         caption = f"🎬 Nomi: {anime['title']}\n📑 Qism: {anime['part']}"
         
         keyboard = InlineKeyboardMarkup([
-            [InlineKeyboardButton("📥 Yuklab olish", url="https://t.me/Anidone_uz_animelar")]
+            [InlineKeyboardButton("📥 Yuklab olish", url=CHANNEL_LINK)]
         ])
         
         await client.send_photo(
@@ -77,5 +88,6 @@ async def find_anime(client, message: Message):
         await message.reply("❌ Bunday kodli anime topilmadi. Boshqa kod yuborib ko'ring.")
 
 app.run()
+
 
 
