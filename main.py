@@ -4,8 +4,8 @@ from pyrogram.errors import UserNotParticipant, ChatAdminRequired
 
 app = Client(
     "anidone_bot",
-    api_id=29384756,
-    api_hash="1234567890abcdef1234567890abcdef",
+    api_id=36275728,
+    api_hash="62384c5845916b8ac25996f83154a13b",
     bot_token="8305229278:AAFODN5XHl7_IsJN_czcX9FQ_zcWdVH7UI8"
 )
 
@@ -86,6 +86,7 @@ async def find_anime(client, message: Message):
         await message.reply("❌ Bunday kodli anime topilmadi. Boshqa kod yuborib ko'ring.")
 
 app.run()
+
 
 
 
