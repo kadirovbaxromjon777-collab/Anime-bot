@@ -136,9 +136,11 @@ async def find_anime(client, message: Message):
 
 # --- 3. Dasturni ishga tushirish ---
 if __name__ == "__main__":
-  # Flask serverini fonda ishga tushiramiz
   keep_alive()
-  # Pyrogram botni to'g'ri usulda ishga tushiramiz
+
+  loop = asyncio.new_event_loop()
+  asyncio.set_event_loop(loop)
   app.run()
+    
     
     
