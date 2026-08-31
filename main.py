@@ -1,5 +1,5 @@
 import asyncio
-from pyrogram import Client, filters
+from pyrogram import Client, filters, idle
 from pyrogram.types import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
@@ -113,7 +113,10 @@ async def find_anime(client, message: Message):
 
 
 if __name__ == "__main__":
-  app.run()
+  app.start()
+  print("Bot muvaffaqiyatli ishga tushdi!")
+  idle()
+  app.stop()
     
     
     
