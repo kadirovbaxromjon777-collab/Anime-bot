@@ -13,22 +13,22 @@ app = Client(
     "anidone_bot",
     api_id=36275728,
     api_hash="62384c5845916b8ac25996f83154a13b",
-    bot_token="8305229278:AAGOMYwCMxJZWvhz2yLYgYxNyRMuiuCG0Cw",
+    bot_token="8305229278:AAHI7DsmLdwysKFf0N5IFmFz4yT2CRnGOzs", # Yangi va to'g'ri token joylashtirildi
 )
 
 CHANNEL_ID = -1003754381541
-CHANNEL_LINK = "https://t.me/Anidone_uz_animelar"
+CHANNEL_LINK = "https://t.me"
 
 ANIMES = {
     "746": {
         "title": "Vaqt Nigohidan tashqarida",
         "part": "4-qism",
-        "photo": "https://telegra.ph/file/example.jpg",
+        "photo": "https://telegra.ph",
     },
     "286": {
         "title": "Naruto Shippuden",
         "part": "1-qism",
-        "photo": "https://telegra.ph/file/example2.jpg",
+        "photo": "https://telegra.ph",
     },
 }
 
@@ -111,12 +111,15 @@ async def find_anime(client, message: Message):
         "❌ Bunday kodli anime topilmadi. Boshqa kod yuborib ko'ring."
     )
 
+# Render serverida xatolik chiqarmasligi uchun asinxron ishga tushirish qismi
+async def main():
+    async with app:
+        print("Bot muvaffaqiyatli ishga tushdi!")
+        await idle()
 
 if __name__ == "__main__":
-  app.start()
-  print("Bot muvaffaqiyatli ishga tushdi!")
-  idle()
-  app.stop()
+    app.run(main())
+    
     
     
     
